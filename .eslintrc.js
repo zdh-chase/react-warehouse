@@ -7,12 +7,18 @@ module.exports = {
     'plugin:react/recommended',
     'airbnb',
   ],
+  parser: 'babel-eslint',
+  settings: {
+    'import/resolver': {
+      webpack: {
+        config: './config/webpack.config.js',
+      },
+    },
+  },
   parserOptions: {
     ecmaFeatures: {
-      jsx: true,
+      legacyDecorators: true,
     },
-    ecmaVersion: 12,
-    sourceType: 'module',
   },
   plugins: [
     'react',

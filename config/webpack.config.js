@@ -58,6 +58,11 @@ const useTypeScript = fs.existsSync(paths.appTsConfig);
 // Get the path to the uncompiled service worker (if it exists).
 const swSrc = paths.swSrc;
 
+const jsWorkerPool = {
+  workers: 2,
+  poolTimeout: 2000,
+};
+
 // style files regexes
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
@@ -366,6 +371,34 @@ module.exports = function (webpackEnv) {
       rules: [
         // Disable require.ensure as it's not a standard language feature.
         { parser: { requireEnsure: false } },
+        {
+          test: /\.(js|mjs|jsx|ts|tsx)$/,
+          enforce: 'pre',
+          use: [
+            {
+              loader: 'thread-loader',
+              options: jsWorkerPool,
+            },
+            {
+              options: {
+                formatter: require.resolve('react-dev-utils/eslintFormatter'),
+                eslintPath: require.resolve('eslint'),
+              },
+              loader: require.resolve('eslint-loader'),
+            },
+            // {
+            //   options: {
+            //     cache: false,
+            //     formatter: require.resolve('react-dev-utils/eslintFormatter'),
+            //     eslintPath: require.resolve('eslint'),
+            //     resolvePluginsRelativeTo: __dirname,
+            //
+            //   },
+            //   loader: require.resolve('eslint-loader'),
+            // },
+          ],
+          include: paths.appSrc,
+        },
         {
           // "oneOf" will traverse all following loaders until one will
           // match the requirements. When no loader matches it will fall

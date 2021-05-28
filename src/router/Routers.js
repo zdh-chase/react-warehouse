@@ -15,14 +15,11 @@ function getRoute({
       exact
       key={JSON.stringify(path)}
       path={path}
-      render={withRouter((props) => {
-        console.log(props, 'withRouter');
-        return (
-          <Layout>
-            <Component title={title} />
-          </Layout>
-        );
-      })}
+      render={withRouter(({ match }) => (
+        <Layout>
+          <Component title={title} match={match} />
+        </Layout>
+      ))}
     />
   );
 }
